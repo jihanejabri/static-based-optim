@@ -25,5 +25,5 @@ object Main extends App {
     rdd*/
   Logger.getRootLogger.setLevel(Level.WARN)
   val d = Dct(sc, folder)
-  println("Query = $query" + query)
+  //println("Query = $query" + query)
 }

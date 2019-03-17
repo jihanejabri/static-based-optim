@@ -1,6 +1,7 @@
 package Static
 
 import org.apache.spark.SparkContext
+import  org.apache.spark.sql.DataFrame
 
 class Dct(sc : SparkContext, dir : String) {
   val lubmEncoded = "C:\\Users\\jmehd\\Desktop\\Projet Big data\\jeu d\\LUBMInstances\\lubm1Encoded.txt\\"
@@ -53,12 +54,18 @@ class Dct(sc : SparkContext, dir : String) {
   println("Data propertiesId2Domain count = "+bench_propertiesId2DomainData_.count)
   println("propertiesId2Domain println= "+bench_propertiesId2DomainData_.take(4).foreach(println))
 
-  //  val  dct = "C:\\Users\\jmehd\\Desktop\\Projet Big data\\jeu d\\LUBMInstances\\"
-  //
-  //  val triples = sc.texrFile(lubmEncoded).map(x=>x.split(" ")).map(w=>(x(0).toLong, x(1).toLong, x(2).toLong))
-  //  val dataF = triples.map{case(s,o,p)=>(s,o,p)}.toDf("s","p","o")
-  //  dataF.persist
-  //  dataF.count*/
+  /****************************** QUERY ************************/
+
+  val rdfs = "http://www.w3.org/2000/01/rdf-schema";
+  val ub = "http://www.univ-mlv.fr/~ocure/lubm.owl";
+  val owl = "http://www.w3.org/2002/07/owl";
+  val rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
+
+  val triples = lubmEncodedData.map(x =>(x(0), x(1), x(2)))
+  val trilpesDF = triples.toDF("subject", "predicat", "object")
+  triplesDF.persist()
+  println("Triples = "+triples.count)
+
 }
 object Dct {
   def apply(sc: SparkContext, d: String): Dct = new Dct(sc, d)

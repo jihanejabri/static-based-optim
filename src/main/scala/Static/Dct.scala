@@ -7,6 +7,10 @@ class Dct(sc : SparkContext, dir : String) {
   val lubmConcept = "C:\\Users\\jmehd\\Desktop\\Projet Big data\\jeu d\\univ-bench_conceptsURL2Id.txt"
   val lubmProperties = "C:\\Users\\jmehd\\Desktop\\Projet Big data\\jeu d\\univ-bench_propertiesURL2Id.txt"
 
+
+  val propertiesId2Range = "C:\\Users\\jmehd\\Desktop\\Projet Big data\\jeu d\\univ-bench_propertiesId2Range.txt"
+  val propertiesId2Domain = "C:\\Users\\jmehd\\Desktop\\Projet Big data\\jeu d\\univ-bench_propertiesId2Domain.txt"
+
   //  val data = sc.textFile(dir +lubmEncoded).map(x=>x.split(" "))
   val lubmEncodedData = sc.textFile(dir +lubmEncoded)
   println("PRINTING DATA ----- = "+lubmEncodedData.take(14).foreach(println))
@@ -32,6 +36,22 @@ class Dct(sc : SparkContext, dir : String) {
   //  conceptId2URI.persist()
   println("Data conceptId2URI count = "+lubmPropertiesData_.count)
   println("conceptId2URI println= "+lubmPropertiesData_.take(4).foreach(println))
+
+  val bench_propertiesId2RangeData = sc.textFile(propertiesId2Range)
+  println("PRINTING DATA ----- = "+bench_propertiesId2RangeData.take(4).foreach(println))
+
+  val bench_propertiesId2RangeData_ = bench_propertiesId2RangeData.map(x=>x.split("\t")).map(x=>(x(0), x(1)))
+
+  println("Data propertiesId2Range count = "+bench_propertiesId2RangeData_.count)
+  println("propertiesId2Range println= "+bench_propertiesId2RangeData_.take(4).foreach(println))
+
+  val bench_propertiesId2DomainData = sc.textFile(propertiesId2Domain)
+  println("PRINTING DATA ----- = "+bench_propertiesId2DomainData.take(4).foreach(println))
+
+  val bench_propertiesId2DomainData_ = bench_propertiesId2DomainData.map(x=>x.split("\t")).map(x=>(x(0), x(1)))
+
+  println("Data propertiesId2Domain count = "+bench_propertiesId2DomainData_.count)
+  println("propertiesId2Domain println= "+bench_propertiesId2DomainData_.take(4).foreach(println))
 
   //  val  dct = "C:\\Users\\jmehd\\Desktop\\Projet Big data\\jeu d\\LUBMInstances\\"
   //

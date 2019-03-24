@@ -105,7 +105,7 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
   val Schedule : Long  = 9216
   val ClericalStaff : Long  = 13168
 
-  /// Chargemnt du jeu de données non encodé
+  /// Chargement du jeu de données non encodés
   val dict ="/LUBMInstances/lubm1.ttl"
   val lubmNonEncodedData = sc.textFile(dir +dict)
   println("PRINTING DATA ----- = "+lubmNonEncodedData.take(14).foreach(println))
@@ -386,20 +386,7 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
   println("Properties degreeFrom count = "+degreeFromP.count)
 
   /****************************** QUERY 1 *********************/
-  /*
-    * PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-  PREFIX ub:<http://www.univ-mlv.fr/~ocure/lubm.owl#>
-  PREFIX owl:<http://www.w3.org/2002/07/owl#>
-  PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  SELECT ?x ?y ?z WHERE {
-    ?x rdf:type ub:GraduateStudent .
-    ?y rdf:type ub:University .
-    ?z rdf:type ub:Department .
-    ?x ub:memberOf ?z .
-    ?z ub:subOrganizationOf ?y .
-    ?x ub:undergraduateDegreeFrom ?y.
-  }
-    * */
+
   val rdfs = "http://www.w3.org/2000/01/rdf-schema";
   val ub = "http://www.univ-mlv.fr/~ocure/lubm.owl";
   val owl = "http://www.w3.org/2002/07/owl";
@@ -411,30 +398,6 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
   val query6 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Student> \n}"
   val query10 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Student> . \n\t?x <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#takesCourse> <http://www.Department0.University0.edu/GraduateCourse0> \n}"
   val query14 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#UndergraduateStudent> \n}"
-
-
-
-  /* val dataFrame = sqlContext.sparqlQuery(dict, query1)
-  dataFrame.show()*/
-
-  /*val dataFrame6 = sqlContext.sparqlQuery(dict, query6)
-  dataFrame6.show()*/
-
-/*
-  val name = Map("rdfs" -> rdfs , "ub"-> ub, "owl"->owl, "rdf"->rdf)1
-
-  def quer+yT(typ:String, prop: String): String = name.get(typ).get + "#" + prop
-  //val typeOf = lubmConceptData_.lookup.queryT("", "").head._1
-
-  val Student : (Long, Long) = lubmConceptData_.lookup.(name.get("ub").get + "#" + "Student".head)
-  val s1 = Student._1
-  val s2 = Student._2
-
- // def borne(concept : (Long, Byte, Byte)) : (Long, Long) = {
-   // val length = 44
-   // val id = concept._1
-  //}
-  */
 
 }
 object Dct {

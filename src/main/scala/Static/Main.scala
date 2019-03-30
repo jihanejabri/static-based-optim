@@ -20,5 +20,10 @@ object Main extends App {
 
   Logger.getRootLogger.setLevel(Level.WARN)
   val d = Dct(sc, folder)
+
+  print("Triplet Query 1*************************************")
+  StaticBasedOptim.print()
+  // Triplet.TripletGraphRequest(//listTriplets)
+  println("--------------------------------------------")
   //println("Query = $query" + query)
 }

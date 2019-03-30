@@ -1,19 +1,21 @@
 package Static
 
-import org.apache.jena.graph.{Node, Triple}
+import org.apache.jena.graph.{NodeFactory, Triple}
 
 object StaticBasedOptim {
   def print(): Unit = {
+    val t:Triple = Triple.create(NodeFactory.createVariable("x"), NodeFactory.createLiteral("ub:takesCourse"), NodeFactory.createURI("<http://www.Department0.University0.edu/GraduateCourse0>"))
+    val s = t.getSubject
+    val o = t.getObject
+    val p = t.getPredicate
 
-    var t1: Triple = Triple.create(new Node.NodeMaker {}," "," ")
-
-   val t: List[Triple] = List("?x rdf:type ub:GraduateStudent","")
+    println("Triple : " + s + " " + p + " " + o)
 
   //  val triple = t.toList
-    println("triple:"+t)
+ /*   println("triple:"+t)
     Triplet.TripletGraphRequest(t)
-    println("Triplet :"+Triplet.TripletGraphRequest(t))
-    println("--------------------------------------------")*/
+    println("Triplet :"+Triplet.TripletGraphRequest(t))*/
+    //println("--------------------------------------------")
   }
 /*
   def getT(elementPathBlock: ElementPathBlock){

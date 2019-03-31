@@ -1,5 +1,6 @@
 package Static
 
+import org.apache.jena.graph.{NodeFactory, Triple}
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.sql.DataFrame
@@ -53,11 +54,11 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
   println("Data propertiesId2Domain count = "+bench_propertiesId2DomainData_.count)
   println("propertiesId2Domain println= "+bench_propertiesId2DomainData_.take(4).foreach(println))
 
-  val sqlContext= new org.apache.spark.sql.SQLContext(sc)
+ /* val sqlContext= new org.apache.spark.sql.SQLContext(sc)
   import sqlContext.implicits._
   val trilpesDF = conceptId2URI.toDF("subject", "predicat", "object")
   println("Triples = "+trilpesDF.count)
-  println("trilpesDF println= "+trilpesDF.take(4).foreach(println))
+  println("trilpesDF println= "+trilpesDF.take(4).foreach(println))*/
 
   /***************************** Statics : nb Concepts*********/
   val Work : Long = 13312
@@ -114,6 +115,12 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
   //  conceptId2URI.persist()
   println("Data lubmNonEncode count = "+lubmNonEncode.count)
   println("lubmNonEncode println= "+lubmNonEncode.take(44).foreach(println))
+
+  val sqlContext= new org.apache.spark.sql.SQLContext(sc)
+  import sqlContext.implicits._
+  val trilpeDF = lubmNonEncode.toDF("subject", "predicat", "object")
+  println("Triples = "+trilpeDF.count)
+  println("trilpesDF println= "+trilpeDF.take(4).foreach(println))
 
   //// Nb concepts :
 
@@ -387,10 +394,6 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
 
   /****************************** QUERY 1 *********************/
 
-  val rdfs = "http://www.w3.org/2000/01/rdf-schema";
-  val ub = "http://www.univ-mlv.fr/~ocure/lubm.owl";
-  val owl = "http://www.w3.org/2002/07/owl";
-  val rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
 
   val query1 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#UndergraduateStudent> \n}"
   val query3 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Publication> . \n\t?x <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#publicationAuthor> <http://www.Department0.University0.edu/AssistantProfessor0> \n}"
@@ -399,6 +402,42 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
   val query10 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Student> . \n\t?x <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#takesCourse> <http://www.Department0.University0.edu/GraduateCourse0> \n}"
   val query14 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#UndergraduateStudent> \n}"
 
+  val rdfs = "http://www.w3.org/2000/01/rdf-schema";
+  val ub = "http://www.univ-mlv.fr/~ocure/lubm.owl";
+  val owl = "http://www.w3.org/2002/07/owl";
+  val rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
+
+  val t1:Triple = Triple.create(NodeFactory.createVariable("x"), NodeFactory.createURI("<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>"), NodeFactory.createURI("<http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#GraduateStudent>"))
+
+  val s1 = t1.getSubject
+  val o1 = t1.getObject
+  val p1 = t1.getPredicate
+
+  println("Triple 1 : " + s1 + " " + p1 + " " + o1)
+
+  val t2:Triple = Triple.create(NodeFactory.createVariable("x"), NodeFactory.createURI("<http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#takesCourse>"), NodeFactory.createURI("<http://www.Department0.University0.edu/GraduateCourse0>"))
+  val s2 = t2.getSubject
+  val o2 = t2.getObject
+  val p2 = t2.getPredicate
+
+  println("Triple 2 : " + s2 + " " + p2 + " " + o2)
+
+  val nsUB = "http://www.univ-mlv.fr/~ocure/lubm.owl"
+  val nsRDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns"
+  val nameSpaces = Map( "ub" -> nsUB, "rdf" -> nsRDF)
+  def qname(ns: String, prop: String): String = nameSpaces.get(ns).get + "#" + prop
+
+  val typee = qname("rdf","type")
+  val GraduateStudentt = qname("ub","GraduateStudent")
+  val takesCoursee = qname("ub","takesCourse")
+
+  val a1 = s"predicate = $typee and object = $GraduateStudentt"
+  val a2 = s"predicate = $takesCoursee and object=$o2"
+
+ // val w1 = trilpeDF.where(a1).select("subject")
+/*  val w2 = trilpeDF.where(a2).select("subject")
+  val r1 = w1.join(w2)*/
+//  println("query1***********"+w1)
 }
 object Dct {
   def apply(sc: SparkContext, d: String): Dct = new Dct(sc, d)

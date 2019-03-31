@@ -4,54 +4,25 @@ import org.apache.jena.graph.{NodeFactory, Triple}
 
 object StaticBasedOptim {
   def print(): Unit = {
-    val t:Triple = Triple.create(NodeFactory.createVariable("x"), NodeFactory.createLiteral("ub:takesCourse"), NodeFactory.createURI("<http://www.Department0.University0.edu/GraduateCourse0>"))
-    val s = t.getSubject
-    val o = t.getObject
-    val p = t.getPredicate
+    val rdfs = "http://www.w3.org/2000/01/rdf-schema";
+    val ub = "http://www.univ-mlv.fr/~ocure/lubm.owl";
+    val owl = "http://www.w3.org/2002/07/owl";
+    val rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
 
-    println("Triple : " + s + " " + p + " " + o)
+    val t1:Triple = Triple.create(NodeFactory.createVariable("x"), NodeFactory.createLiteral(rdf, "type", true), NodeFactory.createLiteral(ub, "GraduateStudent"))
 
-  //  val triple = t.toList
- /*   println("triple:"+t)
-    Triplet.TripletGraphRequest(t)
-    println("Triplet :"+Triplet.TripletGraphRequest(t))*/
-    //println("--------------------------------------------")
+    val s1 = t1.getSubject
+    val o1 = t1.getObject
+    val p1 = t1.getPredicate
+
+    println("Triple 1 : " + s1 + " " + p1 + " " + o1)
+
+    val t2:Triple = Triple.create(NodeFactory.createVariable("x"), NodeFactory.createLiteral(ub, "takesCourse", true), NodeFactory.createURI("<http://www.Department0.University0.edu/GraduateCourse0>"))
+    val s2 = t2.getSubject
+    val o2 = t2.getObject
+    val p2 = t2.getPredicate
+
+    println("Triple 2 : " + s2 + " " + p2 + " " + o2)
+
   }
-/*
-  def getT(elementPathBlock: ElementPathBlock){
-    val triples = Iterator<TriplePath>
-    triples = elementPathBlock.patternElts()
-    val newTriples = List<Triple>
-    newTriples = new ArrayList<>()
-    while(triples.hasNext()){
-      val triple = TriplePath  = triples.next();
-      if(triple.isTriple()) {
-        Node s = triple.getSubject();
-        if(s.isURI()) {
-          String localName = s.getLocalName();
-          s = NodeFactory.createURI(ns + localName);
-        }
-        Node p = triple.getPredicate();
-        if(p.isURI()) {
-          String localName = p.getLocalName();
-          p = NodeFactory.createURI(ns + localName);
-        }
-        Node o = triple.getSubject();
-        if(o.isURI()) {
-          String localName = o.getLocalName();
-          o = NodeFactory.createURI(ns + localName);
-        }
-
-        newTriples.add(Triple.create(s, p, o));
-
-
-      } else {
-        // TODO handle triple path
-      }
-      triples.remove();
-    }
-    for(Triple t : newTriples) {
-      el.addTriple(t);
-    }
-  }*/
 }

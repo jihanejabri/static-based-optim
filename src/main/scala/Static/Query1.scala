@@ -2,6 +2,8 @@ package Static
 import org.apache.jena.query.{QueryFactory, _}
 import org.apache.jena.sparql.algebra.op._
 import org.apache.jena.sparql.algebra.{Algebra, OpVisitor}
+import org.apache.jena.sparql.engine.QueryIterator
+import org.apache.jena.sparql.engine.binding.Binding
 import org.apache.spark.SparkContext
 
 import scala.collection.JavaConverters._
@@ -9,28 +11,36 @@ import scala.collection.JavaConverters._
 class Query1(sc: SparkContext) {
 
   def BGP(line : Query, opBGP: OpBGP): Unit = {
-    val scalaIterable = opBGP.getPattern.asScala
-    println("Triples :--"+Triplet.TripletGraphRequest(scalaIterable.toList))
+    val res = opBGP.getPattern.asScala
+    println("Triples :--"+Triplet.TripletGraphRequest(res.toList))
   }
 
 
-  val sparqlQuery1 = """
-                                 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-                                 PREFIX ub:<http://www.univ-mlv.fr/~ocure/lubm.owl#>
-                                 PREFIX owl:<http://www.w3.org/2002/07/owl#>
-                                 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                                 SELECT ?x WHERE {
-                                   ?x rdf:type ub:GraduateStudent .
-                                   ?x ub:takesCourse <http://www.Department0.University0.edu/GraduateCourse0>.}"""
+  val sparqlQuery1 =
+                    """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+                       PREFIX ub:<http://swat.cse.lehigh.edu/onto/univ-bench.owl#>
+                       PREFIX owl:<http://www.w3.org/2002/07/owl#>
+                       PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                       SELECT ?x WHERE {
+                            ?x rdf:type ub:GraduateStudent .
+                            ?x ub:takesCourse <http://www.Department0.University0.edu/GraduateCourse0>}"""
 
   println("query: " + sparqlQuery1)
 
   val query = QueryFactory.create(sparqlQuery1)
-
-  val dataset : Dataset = DatasetFactory.create("data/LUBMInstances/lubm1.ttl")
+  val dataset = DatasetFactory.create("data/LUBMInstances/lubm1.ttl")
 
   val queryExec: QueryExecution = QueryExecutionFactory.create(query, dataset)
-  val results = queryExec.execSelect()
+  val results : ResultSet = queryExec.execSelect()
+  ResultSetFormatter.out(results)
+
+ println("Res:" +results)
+  println("Running as a query" + results.hasNext())
+  while(results.hasNext()) {
+    val qs: QuerySolution = results.next()
+    println("R:" + qs)
+  }
+
   val op = Algebra.compile(query)
 
   op.visit(new OpVisitor {
@@ -107,16 +117,19 @@ class Query1(sc: SparkContext) {
     override def visit(opTop: OpTopN): Unit = ???
   })
   println("op:" + op)
+  val op1 = Algebra.optimize(op)
+  println("op:" + op1)
+//  println("rdf :" +query.getPrefix("rdf"))
+  val qIter : QueryIterator = Algebra.exec(op1, dataset)
+  println("qIter:" + qIter)
+  val results1 = 0
 
-  println("rdf :" +query.getPrefix("rdf"))
- /* while (results.hasNext()) {
-    println("res:" +results.next())
+  while (qIter.hasNext()) {
+    val b : Binding = qIter.nextBinding()
+    results1 + 1
+    System.out.println("b: "+b)
   }
-  println("Running as a query" + results.hasNext())
-*/
-/*var queryExec: QueryExecution = QueryExecutionFactory.create(query)
-  val results = queryExec.execSelect()
-*/
+  qIter.close()
 }
 
 object Query1 {

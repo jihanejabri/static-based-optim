@@ -1,13 +1,15 @@
-package Static
+package Static.LUBM
+
+import Static.Triplet
 import org.apache.jena.query.{QueryFactory, _}
 import org.apache.jena.sparql.algebra.op._
 import org.apache.jena.sparql.algebra.{Algebra, OpVisitor}
 import org.apache.jena.sparql.engine.QueryIterator
 import org.apache.jena.sparql.engine.binding.Binding
 import org.apache.spark.SparkContext
+import org.apache.spark.sql.DataFrame
 
 import scala.collection.JavaConverters._
-
 class Query1(sc: SparkContext) {
 
   def BGP(line : Query, opBGP: OpBGP): Unit = {
@@ -15,6 +17,14 @@ class Query1(sc: SparkContext) {
     println("Triples :--"+Triplet.TripletGraphRequest(res.toList))
   }
 
+  def queryTime(q: DataFrame): Double = {
+    var start = java.lang.System.currentTimeMillis();
+    var c = q.count
+    var t = (java.lang.System.currentTimeMillis() - start).toDouble /1000
+    println("")
+    println(s"Count=$c, Time= $t (s)")
+    t
+  }
 
   val sparqlQuery1 =
                     """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
@@ -28,18 +38,19 @@ class Query1(sc: SparkContext) {
   println("query: " + sparqlQuery1)
 
   val query = QueryFactory.create(sparqlQuery1)
+
   val dataset = DatasetFactory.create("data/LUBMInstances/lubm1.ttl")
 
   val queryExec: QueryExecution = QueryExecutionFactory.create(query, dataset)
   val results : ResultSet = queryExec.execSelect()
   ResultSetFormatter.out(results)
 
- println("Res:" +results)
+/* println("Res:" +results)
   println("Running as a query" + results.hasNext())
   while(results.hasNext()) {
     val qs: QuerySolution = results.next()
     println("R:" + qs)
-  }
+  }*/
 
   val op = Algebra.compile(query)
 

@@ -20,7 +20,7 @@ object Main extends App {
   import sqlContext.implicits._
 
   Logger.getRootLogger.setLevel(Level.WARN)
-  val d = Dct(sc, folder)
+ // val d = Dct(sc, folder)
 
 /*  val q1 = Query1(sc)
   println("Q1:" +q1)
@@ -48,8 +48,12 @@ object Main extends App {
   println("Q12:" + q12)
   val q13= Query13(sc)
   println("Q13:" + q13)/// !!!*/
-  val q14= Query14(sc)
-  println("Q14:" + q14)
+  /*val q14= Query14(sc)
+  println("Q14:" + q14)*/
+  val q14 = Query14(sc)
+  println("Q14:" +q14)
+
+
   //   println("Triplet Query 1*************************************")
  // StaticBasedOptim.print()
   println("--------------------------------------------")

@@ -29,10 +29,14 @@ class Query9(sc: SparkContext) {
   val query = QueryFactory.create(sparqlQuery9)
 
   val dataset = DatasetFactory.create("data/LUBMInstances/lubm1.ttl")
+  val start = java.lang.System.currentTimeMillis
+
 
   val queryExec: QueryExecution = QueryExecutionFactory.create(query, dataset)
   val results : ResultSet = queryExec.execSelect()
   ResultSetFormatter.out(results)
+  val end: Long = java.lang.System.currentTimeMillis
+  println("Duration Q9 =" + (end - start))
 }
 object Query9 {
   def apply(sc: SparkContext): Query9 = new Query9(sc)

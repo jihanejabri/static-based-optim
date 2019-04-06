@@ -8,7 +8,6 @@ import org.apache.jena.sparql.engine.QueryIterator
 import org.apache.jena.sparql.engine.binding.Binding
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.DataFrame
-
 import scala.collection.JavaConverters._
 class Query1(sc: SparkContext) {
 
@@ -40,11 +39,13 @@ class Query1(sc: SparkContext) {
   val query = QueryFactory.create(sparqlQuery1)
 
   val dataset = DatasetFactory.create("data/LUBMInstances/lubm1.ttl")
+  val start = java.lang.System.currentTimeMillis
 
   val queryExec: QueryExecution = QueryExecutionFactory.create(query, dataset)
   val results : ResultSet = queryExec.execSelect()
   ResultSetFormatter.out(results)
-
+  val end: Long = java.lang.System.currentTimeMillis
+  println("Duration Q1 =" + (end - start))
 /* println("Res:" +results)
   println("Running as a query" + results.hasNext())
   while(results.hasNext()) {
@@ -53,6 +54,7 @@ class Query1(sc: SparkContext) {
   }*/
 
   val op = Algebra.compile(query)
+
 
   op.visit(new OpVisitor {
     override def visit(opBGP: OpBGP): Unit = {
@@ -127,6 +129,7 @@ class Query1(sc: SparkContext) {
 
     override def visit(opTop: OpTopN): Unit = ???
   })
+
   println("op:" + op)
   val op1 = Algebra.optimize(op)
   println("op:" + op1)

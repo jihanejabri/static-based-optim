@@ -41,14 +41,11 @@ object Triplet {
   val teacherOf : Long = 828
   val name : Long = 576
   val degreeFrom : Long = 784
-  val ub = "http://www.univ-mlv.fr/~ocure/lubm.owl";
-  val rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
 
-  val nsUB = "http://www.univ-mlv.fr/~ocure/lubm.owl"
+  val nsUB = "http://swat.cse.lehigh.edu/onto/univ-bench.owl";
   val nsRDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns"
   val nameSpaces = Map( "ub" -> nsUB, "rdf" -> nsRDF)
   def qname(ns: String, prop: String): String = nameSpaces.get(ns).get + "#" + prop
-
 
   def TripletGraphRequest(triple : List[Triple]){
     val newTriples  = List[Triple]()
@@ -66,32 +63,40 @@ object Triplet {
       val typee = qname("rdf", "type")
       val GraduateStudentt = qname("ub", "GraduateStudent")
       val takesCoursee = qname("ub", "takesCourse")
+
       val w  = 0
-      val typeCount : Double = 20659.0 // Statistic dejà calculé dans la classe Dct
+
+      // nb total de triplets (déja calculé dans sla classe Dct)
+      val nbTriplets : Double = 103104.0
+
+      // Statistic dejà calculé dans la classe Dct
+      val typeCount : Double = 20659.0
       val GraduateStudentCount : Double = 1889.0
       val takesCourseeCount : Double = 21489.0
-      val nbTriplets : Double = 103104.0 // nb total de triplets (déja calculé)
-      if (p.toString() == typee) {
-        val w1 : Double = typeCount / nbTriplets * 100
+      val UniversityCount : Double = 3510.0
+      val DepartmentCount : Double = 15.0
+      val memberOfCount : Double = 7790.0
+      val subOrganizationOfCount : Double = 239.0
+      val undergraduateDegreeFromCount : Double = 2414.0
+
+      if (p.toString() == typee) {//20.03%
+      val w1 : Double = typeCount / nbTriplets * 100
         println("/*/*/*/*/*/*/*/*/*/*/*/*/*/ Predicat type !!!!!!!!!!" + w1 + "%")
       }
-      else if (p.toString() == takesCoursee) {
-        val w2 : Double = takesCourseeCount / nbTriplets * 100
-        println("/*/*/*/*/*/*/*/*/*/*/*/*/*/ Predicat takesCoursee !!!!!!!!!!" + w2 + "%")
+      if (o.toString() == GraduateStudentt) {//1.8%
+        val w2 : Double = GraduateStudentCount / nbTriplets * 100
+        println("/*/*/*/*/*/*/*/*/*/*/*/*/*/ concept GraduateStudent !!!!!!!!!!" + w2 + "%")
       }
-     // println("==========================" + takesCoursee)
+      if (p.toString() == takesCoursee) {//20.84%
+      val w3 : Double = takesCourseeCount / nbTriplets * 100
+        println("/*/*/*/*/*/*/*/*/*/*/*/*/*/ Predicat takesCourse !!!!!!!!!!" + w3 + "%")
+      }
+
     })
 
   }
 
-  def calculWeight(): Unit ={
-   // val a1 = s"predicate = $typee and object = $GraduateStudentt"
-   // val a2 = s"predicate = $takesCoursee and object=$o2"
-
-    // val w1 = trilpeDF.where(a1).select("subject")
-    /*  val w2 = trilpeDF.where(a2).select("subject")
-      val r1 = w1.join(w2)*/
-    //  println("query1***********"+w1)
+  /*def calculWeight(): Unit ={
   }
-
+*/
 }

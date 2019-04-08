@@ -1,6 +1,6 @@
 package Static
 
-import Static.LUBM.{Query1, Query13}
+import Static.LUBM.Query1
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.SparkContext._
 import org.apache.spark.{SparkConf, SparkContext}
@@ -52,8 +52,6 @@ object Main extends App {
   println("Q14:" + q14)*/
   val q1 = Query1(sc)
   println("Q1:" +q1)
-  val q8 = Query13(sc)
-  println("Q11:" +q8)
 
   //   println("Triplet Query 1*************************************")
  // StaticBasedOptim.print()

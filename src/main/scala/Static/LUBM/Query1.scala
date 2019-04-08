@@ -16,7 +16,7 @@ class Query1(sc: SparkContext) {
     println("Triples :--"+Triplet.TripletGraphRequest(res.toList))
   }
 
-  def queryTime(q: DataFrame): Double = {
+ /* def queryTime(q: DataFrame): Double = {
     var start = java.lang.System.currentTimeMillis();
     var c = q.count
     var t = (java.lang.System.currentTimeMillis() - start).toDouble /1000
@@ -24,7 +24,7 @@ class Query1(sc: SparkContext) {
     println(s"Count=$c, Time= $t (s)")
     t
   }
-
+*/
   val sparqlQuery1 =
                     """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
                        PREFIX ub:<http://swat.cse.lehigh.edu/onto/univ-bench.owl#>
@@ -45,7 +45,7 @@ class Query1(sc: SparkContext) {
   val results : ResultSet = queryExec.execSelect()
   ResultSetFormatter.out(results)
   val end: Long = java.lang.System.currentTimeMillis
-  println("Duration Q1 =" + (end - start))
+  println("Duration Q1 =" + (end - start) + "ms")
 /* println("Res:" +results)
   println("Running as a query" + results.hasNext())
   while(results.hasNext()) {

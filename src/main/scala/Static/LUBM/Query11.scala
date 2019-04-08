@@ -8,8 +8,9 @@ class Query11(sc: SparkContext) {
                        PREFIX ub:<http://swat.cse.lehigh.edu/onto/univ-bench.owl#>
                        PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
                        SELECT ?x WHERE {
-                            rdf:type ub:ResearchGroup ?x .
-                            ?x ub:subOrganizationOf <http://www.University0.edu> }"""
+                            ?x rdf:type ub:ResearchGroup .
+                            ?x ub:subOrganizationOf ?y .
+                            ?y ub:subOrganizationOf <http://www.University0.edu> }"""
 
   println("query: " + sparqlQuery11)
 
@@ -22,7 +23,7 @@ class Query11(sc: SparkContext) {
   val results : ResultSet = queryExec.execSelect()
   ResultSetFormatter.out(results)
   val end: Long = java.lang.System.currentTimeMillis
-  println("Duration Q11 =" + (end - start))
+  println("Duration Q11 =" + (end - start) + "ms")
 }
 object Query11 {
   def apply(sc: SparkContext): Query11 = new Query11(sc)

@@ -44,9 +44,15 @@ object Triplet {
   val ub = "http://www.univ-mlv.fr/~ocure/lubm.owl";
   val rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns";
 
+  val nsUB = "http://www.univ-mlv.fr/~ocure/lubm.owl"
+  val nsRDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns"
+  val nameSpaces = Map( "ub" -> nsUB, "rdf" -> nsRDF)
+  def qname(ns: String, prop: String): String = nameSpaces.get(ns).get + "#" + prop
+
+
   def TripletGraphRequest(triple : List[Triple]){
     val newTriples  = List[Triple]()
-    triple.foreach(triple =>{
+    triple.foreach(f = triple => {
       // recupérer les triplets de la clause where
       val s = triple.getSubject()
       val o = triple.getObject()
@@ -56,33 +62,36 @@ object Triplet {
       println("Subject : " + s)
       println("Predicate : " + p)
       println("Object : " + o)
-      println("==========================")
 
-
-      // Pour ch chacun des triplets dans une clause wherer creer un noeud dans un gfaphe
-
-    /*  val NodeS : Node  = triple.getSubject()
-      if(NodeS.isVariable()){
-        val name : String = NodeS.getLocalName()
-         val sn = NodeFactory.createURI(name)
-          NodeS.equals(sn)
+      val typee = qname("rdf", "type")
+      val GraduateStudentt = qname("ub", "GraduateStudent")
+      val takesCoursee = qname("ub", "takesCourse")
+      val w  = 0
+      val typeCount : Double = 20659.0 // Statistic dejà calculé dans la classe Dct
+      val GraduateStudentCount : Double = 1889.0
+      val takesCourseeCount : Double = 21489.0
+      val nbTriplets : Double = 103104.0 // nb total de triplets (déja calculé)
+      if (p.toString() == typee) {
+        val w1 : Double = typeCount / nbTriplets * 100
+        println("/*/*/*/*/*/*/*/*/*/*/*/*/*/ Predicat type !!!!!!!!!!" + w1 + "%")
       }
-      val NodeP : Node  = triple.getPredicate()
-      if(NodeP.isURI()){
-        val name : String = NodeP.getLocalName()
-        val sn = NodeFactory.createURI(name)
-        NodeP.equals(sn)
+      else if (p.toString() == takesCoursee) {
+        val w2 : Double = takesCourseeCount / nbTriplets * 100
+        println("/*/*/*/*/*/*/*/*/*/*/*/*/*/ Predicat takesCoursee !!!!!!!!!!" + w2 + "%")
       }
-      val NodeO : Node  = triple.getObject()
-      if(NodeO.isURI()){
-        val name : String = NodeO.getLocalName()
-        val sn = NodeFactory.createURI(name)
-        NodeO.equals(sn)
-      }
-      //newTriples.add(Triple.create(NodeS,NodeP,NodeO))*/
+     // println("==========================" + takesCoursee)
     })
-    /* val tripleList = List(s,p,o)
-      println("Liste : "+ tripleList)*/
+
+  }
+
+  def calculWeight(): Unit ={
+   // val a1 = s"predicate = $typee and object = $GraduateStudentt"
+   // val a2 = s"predicate = $takesCoursee and object=$o2"
+
+    // val w1 = trilpeDF.where(a1).select("subject")
+    /*  val w2 = trilpeDF.where(a2).select("subject")
+      val r1 = w1.join(w2)*/
+    //  println("query1***********"+w1)
   }
 
 }

@@ -22,7 +22,7 @@ class Query10(sc: SparkContext) {
   val results : ResultSet = queryExec.execSelect()
   ResultSetFormatter.out(results)
   val end: Long = java.lang.System.currentTimeMillis
-  println("Duration Q10 =" + (end - start))
+  println("Duration Q10 =" + (end - start) + "ms")
 }
 object Query10 {
   def apply(sc: SparkContext): Query10 = new Query10(sc)

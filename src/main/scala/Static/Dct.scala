@@ -394,7 +394,6 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
 
   /****************************** QUERY 1 *********************/
 
-
   val query1 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#UndergraduateStudent> \n}"
   val query3 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Publication> . \n\t?x <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#publicationAuthor> <http://www.Department0.University0.edu/AssistantProfessor0> \n}"
   val query5 = "SELECT ?x WHERE { \n\t?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Person> . \n\t?x <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#memberOf> <http://www.Department0.University0.edu> \n}"

@@ -1,5 +1,6 @@
 package Static
 import org.apache.jena.graph.Triple
+import org.apache.jena.sparql.core.BasicPattern
 object Triplet {
 
   /***************************** Statics : nb Concepts*********/
@@ -48,7 +49,7 @@ object Triplet {
   def qname(ns: String, prop: String): String = nameSpaces.get(ns).get + "#" + prop
 
   def TripletGraphRequest(triple : List[Triple]){
-    val newTriples  = List[Triple]()
+    //val newTriples  = List[String]()
     triple.foreach(f = triple => {
       // recupérer les triplets de la clause where
       val s = triple.getSubject()
@@ -59,6 +60,9 @@ object Triplet {
       println("Subject : " + s)
       println("Predicate : " + p)
       println("Object : " + o)
+
+      //val newTriples  = getVarsOfTriple(triple)
+      println("Triple : "+getVarsOfTriple(triple))
 
       val typee = qname("rdf", "type")
       val GraduateStudentt = qname("ub", "GraduateStudent")
@@ -96,7 +100,91 @@ object Triplet {
 
   }
 
-  /*def calculWeight(): Unit ={
+   def getVarsOfTriple(t: Triple): List[String] = {
+     val vars : List[String] = List()
+     val typee = qname("rdf", "type")
+     val GraduateStudentt = qname("ub", "GraduateStudent")
+     val subject = t.getSubject
+     val predicate = t.getPredicate
+     val obj = t.getObject
+     val sel : Double = 1.0
+     val trilpeDF: Double = 103104.0 //dejà calculé dans la classe Dct
+     val typeCount : Double = 20659.0
+     if (subject.isVariable && predicate.isURI && obj.isURI) {
+       if(predicate.toString() == typee){
+         val select = sel * (typeCount/trilpeDF)
+         println("///// Pred type " + select + "%")
+         println(vars :+ subject.getName + "," + predicate.getURI + "," + obj.getURI + "," + select)
+       }
+       println(vars :+ subject.getName + "," + predicate.getURI + "," + obj.getURI + "," + sel)
+
+     }
+    /* if (predicate.isURI)
+       println(vars:+predicate.getURI)
+     if (obj.isURI)
+       println(vars:+obj.getURI)*/
+     println("t:" + t)
+     println("Var:" + vars)
+     vars
+   }
+
+  def getSharedVars(leftSchema : List[String], rightSchema : List[String]): List[String] ={
+    val sharedVars : List[String] = List()
+    var i : Int = 0
+
+    while ( {
+      i < rightSchema.size
+    }) {
+      if (leftSchema.contains(rightSchema.lift(i)))
+        sharedVars:+(rightSchema.lift(i))
+      i += 1
+    }
+    sharedVars
   }
-*/
+
+   val inputPattern : BasicPattern = new BasicPattern()
+   def hasSharedVars(triplePos: Int): Boolean = {
+     val triple : Triple = inputPattern.get(triplePos)
+     val tripleVars : List[String] = getVarsOfTriple(triple)
+     var i = 0
+     while ( {
+       i < inputPattern.size
+     }) {
+       if ((i != triplePos) && getSharedVars(getVarsOfTriple(inputPattern.get(i)), tripleVars).size > 0) return true
+       i += 1
+     }
+    return false
+  }
+
+  def chooseFirst(): Int = {
+    var i = 0
+    while ( {
+      i < inputPattern.size
+    }) {
+      if (hasSharedVars(i)) return i
+      i += 1
+    }
+    return 0
+  }
+
+  def chooseNext(): Int ={
+    return 0
+  }
+
+  def reorder(): Unit ={
+
+  }
+
+ /* val allJoinVars : List[String]
+  def addToJoinVars(tripleVars : List[String]): Unit ={
+    var field = String
+    var i = 0
+    while ( {
+      i < tripleVars.size
+    }) {
+      field = tripleVars.get(i)
+      if (!allJoinVars.contains(field)) allJoinVars:+(field)
+        i += 1
+    }
+  }*/
 }

@@ -23,6 +23,5 @@ object StaticBasedOptim {
     val p2 = t2.getPredicate
 
     println("Triple 2 : " + s2 + " " + p2 + " " + o2)
-
   }
 }

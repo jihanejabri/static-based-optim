@@ -1,6 +1,5 @@
 package Static
 
-import org.apache.jena.graph.{NodeFactory, Triple}
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.sql.DataFrame
@@ -391,6 +390,8 @@ class Dct(sc : SparkContext, dir : String) extends  Serializable {
   ///degreeFrom
   val degreeFromP = conceptId2URI.filter(x=> x._2.equals(degreeFrom)) //0
   println("Properties degreeFrom count = "+degreeFromP.count)
+
+  /****************************************************/
 
 }
 object Dct {

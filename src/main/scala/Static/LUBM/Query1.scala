@@ -8,12 +8,18 @@ import org.apache.jena.sparql.engine.QueryIterator
 import org.apache.jena.sparql.engine.binding.Binding
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.DataFrame
+import org.apache.jena.graph.Triple
 import scala.collection.JavaConverters._
+
 class Query1(sc: SparkContext) {
 
   def BGP(line : Query, opBGP: OpBGP): Unit = {
     val res = opBGP.getPattern.asScala
     println("Triples :--"+Triplet.TripletGraphRequest(res.toList))
+  }
+
+  def OrderAndGetBGPs(bgps: List[Triple]): Unit ={
+    return bgps
   }
 
  /* def queryTime(q: DataFrame): Double = {
@@ -52,9 +58,8 @@ class Query1(sc: SparkContext) {
     val qs: QuerySolution = results.next()
     println("R:" + qs)
   }*/
-
   val op = Algebra.compile(query)
-
+//  val basicGraphPatterns : List[Triple] = query.getBasicGraphPatterns()
 
   op.visit(new OpVisitor {
     override def visit(opBGP: OpBGP): Unit = {
@@ -129,7 +134,8 @@ class Query1(sc: SparkContext) {
 
     override def visit(opTop: OpTopN): Unit = ???
   })
-
+ // val  basicGraphPatterns : List[Triple]  =
+ // val orderAndGetBGPs : List[Triple] = OrderAndGetBGPs(basicGraphPatterns)
   println("op:" + op)
   val op1 = Algebra.optimize(op)
   println("op:" + op1)

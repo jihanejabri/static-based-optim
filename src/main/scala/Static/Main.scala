@@ -10,7 +10,6 @@ object Main extends App {
 
   System.setProperty("hadoop.home.dir", "C:\\winutils\\")
 
-  val query = "SELECT ?x WHERE { ?x <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#UndergraduateStudent> }"
   val folder = "data"
 
   val conf = new SparkConf().setAppName(this.getClass.getSimpleName).setMaster("local")
@@ -20,7 +19,8 @@ object Main extends App {
   import sqlContext.implicits._
 
   Logger.getRootLogger.setLevel(Level.WARN)
- // val d = Dct(sc, folder)
+  //Statics
+  //val d = Dct(sc, folder)
 
 /*  val q1 = Query1(sc)
   println("Q1:" +q1)
@@ -53,7 +53,6 @@ object Main extends App {
   val q1 = Query1(sc)
   println("Q1:" +q1)
 
-  //   println("Triplet Query 1*************************************")
  // StaticBasedOptim.print()
   println("--------------------------------------------")
 }

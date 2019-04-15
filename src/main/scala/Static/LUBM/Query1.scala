@@ -1,6 +1,8 @@
 package Static.LUBM
 
 import Static.Triplet
+import Static.Triplet.nameSpaces
+import org.apache.jena.graph.Triple
 import org.apache.jena.query.{QueryFactory, _}
 import org.apache.jena.sparql.algebra.op._
 import org.apache.jena.sparql.algebra.{Algebra, OpVisitor}
@@ -8,37 +10,33 @@ import org.apache.jena.sparql.engine.QueryIterator
 import org.apache.jena.sparql.engine.binding.Binding
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.DataFrame
-import org.apache.jena.graph.Triple
+
 import scala.collection.JavaConverters._
 
 class Query1(sc: SparkContext) {
 
   def BGP(line : Query, opBGP: OpBGP): Unit = {
     val res = opBGP.getPattern.asScala
-    println("Triples :--"+Triplet.TripletGraphRequest(res.toList))
+   // println("Triples :--"+Triplet.TripletGraphRequest(OrderAndGetBGPs(res.toList)))
+    println("Triples :--"+Triplet.TripletGraphRequests(res.toList))
   }
 
-  def OrderAndGetBGPs(bgps: List[Triple]): Unit ={
+  def OrderAndGetBGPs(bgps: List[Triple]): List[Triple] ={
     return bgps
   }
 
- /* def queryTime(q: DataFrame): Double = {
-    var start = java.lang.System.currentTimeMillis();
-    var c = q.count
-    var t = (java.lang.System.currentTimeMillis() - start).toDouble /1000
-    println("")
-    println(s"Count=$c, Time= $t (s)")
-    t
-  }
-*/
   val sparqlQuery1 =
-                    """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+    """PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
                        PREFIX ub:<http://swat.cse.lehigh.edu/onto/univ-bench.owl#>
                        PREFIX owl:<http://www.w3.org/2002/07/owl#>
                        PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                       SELECT ?x WHERE {
-                            ?x rdf:type ub:GraduateStudent .
-                            ?x ub:takesCourse <http://www.Department0.University0.edu/GraduateCourse0>}"""
+                       SELECT ?X ?Y ?Z WHERE {
+                              ?X rdf:type ub:GraduateStudent .
+                              ?Y rdf:type ub:University .
+                              ?Z rdf:type ub:Department .
+                              ?X ub:memberOf ?Z .
+                              ?Z ub:subOrganizationOf ?Y .
+                              ?X ub:undergraduateDegreeFrom ?Y}"""
 
   println("query: " + sparqlQuery1)
 
@@ -50,6 +48,16 @@ class Query1(sc: SparkContext) {
   val queryExec: QueryExecution = QueryExecutionFactory.create(query, dataset)
   val results : ResultSet = queryExec.execSelect()
   ResultSetFormatter.out(results)
+
+  val typee = qname("rdf", "type")
+  val GraduateStudentt = qname("ub", "GraduateStudent")
+  val typeCount : Double = 20659.0
+  val GraduateStudentCount : Double = 1889.0
+  // nb total de triplets (déja calculé dans sla classe Dct)
+  val nbTriplets : Double = 103104.0
+
+  println("resVar:"+query.getQueryPattern())
+
   val end: Long = java.lang.System.currentTimeMillis
   println("Duration Q1 =" + (end - start) + "ms")
 /* println("Res:" +results)
@@ -143,11 +151,14 @@ class Query1(sc: SparkContext) {
   val qIter : QueryIterator = Algebra.exec(op1, dataset)
   println("qIter:" + qIter)
   val results1 = 0
+  def qname(ns: String, prop: String): String = nameSpaces.get(ns).get + "#" + prop
+ val takesCoursee = qname("ub", "takesCourse")
 
   while (qIter.hasNext()) {
     val b : Binding = qIter.nextBinding()
     results1 + 1
     System.out.println("b: "+b)
+
   }
   qIter.close()
 }

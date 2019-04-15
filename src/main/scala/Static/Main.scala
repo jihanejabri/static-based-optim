@@ -53,6 +53,8 @@ object Main extends App {
   val q1 = Query1(sc)
   println("Q1:" +q1)
 
+  //println("minT:"+Triplet.min(12.0,15.3))
+
  // StaticBasedOptim.print()
   println("--------------------------------------------")
 }

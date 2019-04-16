@@ -1,6 +1,8 @@
 package Static
 import org.apache.jena.graph.Triple
 import org.apache.jena.sparql.core.BasicPattern
+
+import scala.collection.JavaConverters._
 object Triplet {
 
   val nsUB = "http://swat.cse.lehigh.edu/onto/univ-bench.owl";
@@ -20,12 +22,19 @@ object Triplet {
   val subOrganizationOfCount : Double = 239.0
   val undergraduateDegreeFromCount : Double = 2414.0
   val graduateCourse0Count : Double = 7.0
-  def qname(ns: String, prop: String): String = nameSpaces.get(ns).get + "#" + prop
-  val typee = qname("rdf", "type")
-  val GraduateStudentt = qname("ub", "GraduateStudent")
-  val takesCoursee = qname("ub", "takesCourse")
-  val universityy = qname("ub", "University")
-  val Departmentt = qname("ub", "Department")
+
+
+  def Triplename(ns: String, prop: String): String = nameSpaces.get(ns).get + "#" + prop
+
+  val typee = Triplename("rdf", "type")
+  val GraduateStudentt = Triplename("ub", "GraduateStudent")
+  val takesCoursee = Triplename("ub", "takesCourse")
+  val universityy = Triplename("ub", "University")
+  val Departmentt = Triplename("ub", "Department")
+
+  val JoinVars : List[String] = List()
+  val lastJoinVars : List[String] = List()
+
 
   def TripletGraphRequests(triple : List[Triple]){
     //val newTriples  = List[String]()
@@ -41,15 +50,14 @@ object Triplet {
       println("Object : " + o)
 
       //val newTriples  = getVarsOfTriple(triple)
-      println("Triple : "+getVarsOfTriple1(triple))
+      println("Triple : "+getVarsOfTriple(triple))
      // println("test hassharedVarss:"+hasSharedVars(1))
     })
   }
 
-   def getVarsOfTriple1(t: Triple): List[String] = {
+   def getVarsOfTriple(t: Triple): List[String] = {
      val vars : List[String] = List()
-     val typee = qname("rdf", "type")
-     val GraduateStudentt = qname("ub", "GraduateStudent")
+
      val subject = t.getSubject
      val predicate = t.getPredicate
      val obj = t.getObject
@@ -57,7 +65,7 @@ object Triplet {
      val trilpeDF: Double = 103104.0 //dejà calculé dans la classe Dct
      val typeCount : Double = 20659.0
      if (subject.isVariable && predicate.isURI && obj.isURI) {
-       var sel1: Double = 0.0
+     /*  var sel1: Double = 0.0
        var sel2: Double = 0.0
        var sel:Double =0.0
        if(predicate.toString() == typee && obj.toString() == GraduateStudentt || obj.toString() == universityy || obj.toString == Departmentt){
@@ -72,11 +80,10 @@ object Triplet {
          sel1 = 0.33*select1 + 0.33*select2
          sel1 = 0.33*select1 + 0.33*select3
          sel1 = 0.33*select1 + 0.33*select4
-
          println("selctivity:"+sel1)
          println(vars :+ subject.getName + "," + predicate.getURI + "," + obj.getURI + "," + sel1)
        }
-        if(obj.toString() == graduateCourse0 && predicate.toString() == takesCoursee) {
+       if(obj.toString() == graduateCourse0 && predicate.toString() == takesCoursee) {
          val select5 =  (graduateCourse0Count/trilpeDF)
          val select6 =  (takesCourseeCount/trilpeDF)
          println("///// Obj graduateCourse " + select5 + "%")
@@ -91,8 +98,8 @@ object Triplet {
        println("selctivity2Test:"+sel2)
        println("selctivityTest:"+min(12.3,10.6))
        min(sel1, sel2)
-       println("min sel:"+min(sel1, sel2))
-       println(vars :+ subject.getName + "," + predicate.getURI + "," + obj.getURI + "," + min(sel1, sel2))
+       println("min sel:"+min(sel1, sel2))*/
+       println(vars :+ subject.getName + "," + predicate.getURI + "," + obj.getURI)
      }
      vars
    }
@@ -102,32 +109,32 @@ object Triplet {
      else return s2
     }
 
-  def getSharedVars(leftSchema : List[String], rightSchema : List[String]): List[String] ={
-    val sharedVars : List[String] = List()
+  def getSharedVars(leftPart : List[String], rightPart : List[String]): List[String] ={
+    val Vars : List[String] = List()
     var i : Int = 0
 
-    while ({i < rightSchema.size}) {
-      if (leftSchema.contains(rightSchema.lift(i)))
-        sharedVars:+(rightSchema.lift(i))
+    while ({i < rightPart.size}) {
+      if (leftPart.contains(rightPart.lift(i)))
+        Vars:+(rightPart.lift(i))
       i += 1
     }
-    sharedVars
+    Vars
   }
 
   var inputPattern: BasicPattern =  new BasicPattern()
-   def hasSharedVars(triplePos: Int): Boolean = {
-     val triple : Triple = inputPattern.get(triplePos)
+   def hasSharedVars(triplePosition: Int): Boolean = {
+     val triple : Triple = inputPattern.get(triplePosition)
 
-     val tripleVars : List[String] = getVarsOfTriple1(triple)
+     val tripleVars : List[String] = getVarsOfTriple(triple)
      var i = 0
      while ({i < inputPattern.size}) {
-       if ((i != triplePos) &&  getSharedVars(getVarsOfTriple1(inputPattern.get(i)), tripleVars)==true) return true
+       if ((i != triplePosition) &&  getSharedVars(getVarsOfTriple(inputPattern.get(i)), tripleVars)==true) return true
        i += 1
      }
     return false
   }
 
-  def chooseFirst(): Int = {
+  def chooseFirstTriple(): Int = {
     var i = 0
     while ( {
       i < inputPattern.size
@@ -137,46 +144,41 @@ object Triplet {
     }
     return 0
   }
-  val allJoinVars : List[String] = List()
-  val lastJoinVars : List[String] = List()
 
-  def chooseNext(): Int ={
+  def chooseNextTriple(): Int ={
     var nextTriple = 0
-    var numOfJoinVars = 0
+    var numOfTVars = 0
     var i = 0
+
     while ({ i < inputPattern.size }) {
-      val tripleVars: List[String] = getVarsOfTriple1(inputPattern.get(i))
-      val sharedVars: List[String] = getSharedVars(allJoinVars, tripleVars)
-      if (sharedVars.size > numOfJoinVars) {
-       // lastJoinVars.addAll(sharedVars)
+      val tripleVars = getVarsOfTriple(inputPattern.get(i))
+      val sharedVars = getSharedVars(JoinVars, tripleVars)
+      if (tripleVars.size > numOfTVars) {
+       // JoinVars.addAll(sharedVars)
         nextTriple = i
-        numOfJoinVars = sharedVars.size
+        numOfTVars = tripleVars.size
       }
         i += 1
     }
-    // return the first pattern
-    return nextTriple
+    return nextTriple    // return the first pattern
   }
-/*
-  def reorder(pattern: BasicPattern): BasicPattern ={
+
+
+  def reorderTriples(pattern: BasicPattern): BasicPattern ={
     val outputPattern : BasicPattern = new BasicPattern()
     inputPattern = pattern
-    val triples: List[Triple] = {
-      inputPattern.asScala.toList
-    }
-    var idx: Int = chooseFirst
-    var triple: Triple = triples.get(idx)
+    val triples: List[Triple] = inputPattern.asScala.toList
+    var idx: Int = chooseFirstTriple()
+    var triple: Triple = triples(idx)
     outputPattern.add(triple)
-    getVarsOfTriple1(triple)
+    getVarsOfTriple(triple)
     triples.drop(idx)
 
-    while ({!(triples.isEmpty)}) {
-      idx = chooseNext
-      triple = triples.add(idx)
-      outputPattern.add(triple)
-      getVarsOfTriple1(triple)
-      triples.drop(idx)
-    }
+    idx = chooseNextTriple()
+    outputPattern.add(triple)
+    getVarsOfTriple(triple)
+    triples.drop(idx)
+
     outputPattern
-  }*/
+  }
 }

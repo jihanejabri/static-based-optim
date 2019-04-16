@@ -174,11 +174,12 @@ object Triplet {
     getVarsOfTriple(triple)
     triples.drop(idx)
 
-    idx = chooseNextTriple()
-    outputPattern.add(triple)
-    getVarsOfTriple(triple)
-    triples.drop(idx)
-
+    if(idx<triples.size) {
+      idx = chooseNextTriple()
+      outputPattern.add(triple)
+      getVarsOfTriple(triple)
+      triples.drop(idx)
+    }
     outputPattern
   }
 }

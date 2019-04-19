@@ -19,7 +19,8 @@ object Main extends App {
   import sqlContext.implicits._
 
   Logger.getRootLogger.setLevel(Level.WARN)
-  //Statics
+
+  //Statics => nb properties, nb concepts, nb triplets
   //val d = Dct(sc, folder)
 
 /*  val q1 = Query1(sc)
@@ -51,7 +52,6 @@ object Main extends App {
   /*val q14= Query14(sc)
   println("Q14:" + q14)*/
   val q1 = Query1(sc)
-  println("Q1:" +q1)
 
   //println("minT:"+Triplet.min(12.0,15.3))
 

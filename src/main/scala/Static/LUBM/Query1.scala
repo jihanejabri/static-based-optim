@@ -1,7 +1,6 @@
 package Static.LUBM
 
 import Static.Triplet
-import Static.Triplet.nameSpaces
 import org.apache.jena.graph.Triple
 import org.apache.jena.query.{QueryFactory, _}
 import org.apache.jena.sparql.algebra.op._
@@ -51,29 +50,11 @@ class Query1(sc: SparkContext) {
  val results : ResultSet = queryExec.execSelect()
  ResultSetFormatter.out(results)
 
- val typee = qname("rdf", "type")
- val GraduateStudentt = qname("ub", "GraduateStudent")
- val typeCount : Double = 20659.0
- val GraduateStudentCount : Double = 1889.0
- // nb total de triplets (déja calculé dans sla classe Dct)
- val nbTriplets : Double = 103104.0
 
  val end: Long = java.lang.System.currentTimeMillis
  println("Duration Q1 =" + (end - start) + "ms")
-// println("Res:" +results)
-//  println("Running as a query" + results.hasNext())
- def qname(ns: String, prop: String): String = nameSpaces.get(ns).get + "#" + prop
- while({results.hasNext()}) {
-   val qs: QuerySolution = results.next()
- /*  val sol : QuerySolution = results.nextSolution()
-   val rdfNodeP : RDFNode = sol.get(typee)
-   if(rdfNodeP.toString.equals("rdf:type")){
-     println("Predicat type query"+rdfNodeP)
-   }*/
-   println("R:" + qs)
- }
+
  val op = Algebra.compile(query)
-//  val basicGraphPatterns : List[Triple] = query.getBasicGraphPatterns()
 
  op.visit(new OpVisitor {
    override def visit(opBGP: OpBGP): Unit = {
@@ -150,14 +131,14 @@ class Query1(sc: SparkContext) {
 
    override def visit(opTop: OpTopN): Unit = ???
  })
-// val  basicGraphPatterns : List[Triple]  =
-// val orderAndGetBGPs : List[Triple] = OrderAndGetBGPs(basicGraphPatterns)
+
  println("op:" + op)
  val op1 = Algebra.optimize(op)
  println("op:" + op1)
-//  println("rdf :" +query.getPrefix("rdf"))
+
+ val start1 = java.lang.System.currentTimeMillis
  val qIter : QueryIterator = Algebra.exec(op1, dataset)
-// println("qIter:" + qIter)
+
  val results1 = 0
  while (qIter.hasNext()) {
    val b : Binding = qIter.nextBinding()
@@ -165,6 +146,8 @@ class Query1(sc: SparkContext) {
    System.out.println("b: "+b)
  }
  qIter.close()
+  val end1: Long = java.lang.System.currentTimeMillis
+  println("Duration Q1 =" + (end1 - start1) + "ms")
 }
 
 object Query1 {

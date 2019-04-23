@@ -169,7 +169,6 @@ object Triplet {
       val tripleVars = getVarsOfTriple(inputPattern.get(i))
       val sharedVars = getSameVars(JoinVars, tripleVars)
       if (tripleVars.size > numOfTVars) {
-       // JoinVars.addAll(sharedVars)
         nextTriple = i
         numOfTVars = tripleVars.size
       }
